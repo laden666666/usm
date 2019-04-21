@@ -4,16 +4,21 @@ import Enum from '../utils/enum';
 import flatten from '../utils/flatten';
 import event from '../utils/event';
 
+// state类型
 export type State<T> = T;
+
+// 类似redux的reducer
 export interface Reducer {
   (state: State<any>, action: Action): State<any>;
 }
 
+// Module实例的类型（这和Module有什么区别？）
 export type ModuleInstance = InstanceType<typeof Module>;
+
+// 属性
 export type Properties<T = any> = {
   [P in string]?: T;
 }
-
 export type Attribute<T = any> = {
   [P in string]: T;
 }
@@ -29,6 +34,7 @@ const DEFAULT_PROPERTY = {
   writable: false,
 };
 
+// 回到
 interface Callback<T = undefined, S = void> {
   (params: T): S;
 };
@@ -45,6 +51,7 @@ interface Module extends Properties {
   setStore?(store: Store): void;
 }
 
+// action的概念
 export interface Action {
   type: string[]|string;
   states?: Properties;

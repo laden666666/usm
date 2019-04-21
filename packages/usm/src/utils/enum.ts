@@ -8,19 +8,26 @@ const {
   defineProperty
 } = Object;
 
+// 前缀
 export type Prefix = string;
+// 属性名
 export type PropertyKey = string;
 export type PropertyKeys = PropertyKey[];
 
+// 属性名为key的map
 type Properties<T> = {
   [P in PropertyKey]?: T;
 }
 
+// 可枚举类型
 interface Enum {
   prefix: Prefix;
   [key: string]: any;
 }
 
+/**
+ * 一个管理属性的类，支持前缀
+ */
 class Enum implements Enum {
   constructor(keys: PropertyKeys = [], prefix: Prefix) {
     const properties: PropertyDescriptorMap = {
@@ -34,6 +41,8 @@ class Enum implements Enum {
     keys.forEach((item) => {
       properties[item] = Enum.setPrefix(item, prefix);
     });
+
+    // 将keys赋值给自己。如['a', 'b'] -> {'a': 'a', 'b': 'b'}
     defineProperties(this, properties);
     if (Proxy && Reflect) {
       freeze(this);
@@ -42,7 +51,8 @@ class Enum implements Enum {
     }
   }
 
-  static setPrefix(item: PropertyKey, prefix: Prefix) {
+  // 给属性设置前缀，返回一个PropertyDescriptor对象
+  static setPrefix(item: PropertyKey, prefix: Prefix):PropertyDescriptor {
     const value = prefix ? `${prefix}-${item}` : item;
     return {
       value,
@@ -52,10 +62,12 @@ class Enum implements Enum {
     };
   }
 
+  // 获取字段长度
   get size() {
     return entries(this).length;
   }
 
+  // 增加属性
   add(item: PropertyKey) {
     if (this[item]) {
       throw new Error(`'${item}' enumeration property already exists for this instance`);
@@ -64,6 +76,7 @@ class Enum implements Enum {
     defineProperty(this, item, property);
   }
 
+  // 移除属性
   remove(item: PropertyKey) {
     if (!hasOwnProperty.call(this, item)) {
       throw new Error(`'${item}' enumeration property does not exist for this instance`);

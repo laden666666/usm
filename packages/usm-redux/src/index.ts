@@ -1,3 +1,4 @@
+// 主要靠immer
 import produce from 'immer';
 import { createSelector } from 'reselect';
 import { event, Event } from 'usm';
@@ -40,6 +41,7 @@ function createState(target: ModuleInstance, name: string, descriptor?: Descript
 function action(target: ModuleInstance, name: string, descriptor: TypedPropertyDescriptor<any>) {
   const fn = descriptor.value;
   descriptor.value = function (this: ModuleInstance, ...args:[]) {
+    // 主要依靠produce实现不可变数据的转换
     const states = produce(this.state, fn.bind(this, ...args));
     this._dispatch({
       type: Object.keys(this.state).map(key => this.actionTypes[key]),

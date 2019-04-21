@@ -16,6 +16,8 @@ type Decorator = {
 };
 
 export default function freeze<T>(object: Target) {
+
+  // 用一个代理对象
   return new Proxy(object, {
     set (target: Target, key: Key, value: Value, receiver: T) {
       return Reflect.set(target, key, value, receiver);

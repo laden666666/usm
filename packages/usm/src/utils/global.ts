@@ -6,6 +6,7 @@ export interface Global {
 }
 
 declare var global: Global;
+declare var process: any;
 
 export default function handle() {
   const __DEV__ = process.env.NODE_ENV === 'development';
